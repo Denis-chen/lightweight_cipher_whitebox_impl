@@ -39,34 +39,19 @@ void present_wb_helper_init(int rounds, wb_helper &wbh) {
 
 	for (i = 0; i < rounds; i++) {
 		for (k = 0; k < 8; k++) {
-			 //genIndMatrix( wbh.f[i][k], 8);
-			 //genIndMatrix( wbh.f_inv[i][k], 8);
-			//genRandomInvMatrix( wbh.f[i][k], wbh.f_inv[i][k], 8);
-			//initinvbaseM8(initM8_max);
-			genMatpairM8(&wbh.f[i][k], &wbh.f_inv[i][k]);//Éú³É¿ÉÄæ¾ØÕó¼°ÆäÄæ¾ØÕó
+			genMatpairM8(&wbh.f[i][k], &wbh.f_inv[i][k]);//Ã‰ÃºÂ³Ã‰Â¿Ã‰Ã„Ã¦Â¾Ã˜Ã•Ã³Â¼Â°Ã†Ã¤Ã„Ã¦Â¾Ã˜Ã•Ã³
 			//identityM8(&wbh.f[i][k]);
 			//identityM8(&wbh.f_inv[i][k]);
 		}
 
-		//Ã¿ËÄ¸ö¾ØÕó×é³É¶Ô½ÇÏß¾ØÕó
+		//ÃƒÂ¿Ã‹Ã„Â¸Ã¶Â¾Ã˜Ã•Ã³Ã—Ã©Â³Ã‰Â¶Ã”Â½Ã‡ÃÃŸÂ¾Ã˜Ã•Ã³
 		MatrixcomM8to32(wbh.f_inv[i][0], wbh.f_inv[i][1], wbh.f_inv[i][2], wbh.f_inv[i][3], &wbh.fc_inv[i][0]);
 		MatrixcomM8to32(wbh.f_inv[i][4], wbh.f_inv[i][5], wbh.f_inv[i][6], wbh.f_inv[i][7], &wbh.fc_inv[i][1]);
-		//combineDiagMat(T, wbh.f_inv[i][0], wbh.f_inv[i][1]);
-		//combineDiagMat(S, T, wbh.f_inv[i][2]);
-		//combineDiagMat(wbh.fc_inv[i][0], S, wbh.f_inv[i][3]);
-
-		//combineDiagMat(T, wbh.f_inv[i][4], wbh.f_inv[i][5]);
-		//combineDiagMat(S, T, wbh.f_inv[i][6]);
-		//combineDiagMat(wbh.fc_inv[i][1], S, wbh.f_inv[i][7]);
 
 	}
 	for (i = 0; i <= rounds; i++) {
 		for (k = 0; k < 8; k++) {
-			// genIndMatrix( wbh.g[i][k], 8);
-			//genIndMatrix( wbh.g_inv[i][k], 8);
-			//genRandomInvMatrix( wbh.g[i][k], wbh.g_inv[i][k], 8);
-			//initinvbaseM8(initM8_max);
-			genMatpairM8(&wbh.g[i][k], &wbh.g_inv[i][k]);//¿ÉÄæ¾ØÕóÒÔ¼°Äæ¾ØÕóÉú³É
+			genMatpairM8(&wbh.g[i][k], &wbh.g_inv[i][k]);//Â¿Ã‰Ã„Ã¦Â¾Ã˜Ã•Ã³Ã’Ã”Â¼Â°Ã„Ã¦Â¾Ã˜Ã•Ã³Ã‰ÃºÂ³Ã‰
 			//identityM8(&wbh.g[i][k]);
 			//identityM8(&wbh.g_inv[i][k]);
 		}
@@ -93,16 +78,8 @@ void Mat8MulMatM32(M8 a, M32 b, M32 *c) {
 		c->M[i] = (b1.M[i] << 24) ^ (b2.M[i] << 16) ^ (b3.M[i] << 8) ^ (b4.M[i]);
 	}
 	//return 0;
-}//8*8¾ØÕó³Ë8*32¾ØÕó
+}//8*8Â¾Ã˜Ã•Ã³Â³Ã‹8*32Â¾Ã˜Ã•Ã³
 
-/*void initMatrixFromBit(M32 *Mat, long* data) {
-	long i, j;
-	M32* mat = Mat;
-	for (i = 31, j = 0; i >= 24; i--, j++) {
-
-		mat->M[i] = data[7 - j];
-	}
-}*/
 void initMatrixFromBit(M32 *Mat, long* data) {
 	long i, j;
 	M32* mat = Mat;
@@ -111,57 +88,20 @@ void initMatrixFromBit(M32 *Mat, long* data) {
 		mat->M[i] = data[i];
 	}
 }
-void initVecFromBit8(V8 *vec, long data) {
 
-
-	vec->V = 0;
-	for (int i = 0; i<8; i++) {
-
-		vec->V = vec->V ^ ((data % 2) << i);
-		data = data >> 1;
-	}
-
-
-
-}//³õÊ¼»¯vec
-void initVecFromBit32(V32 *vec, long data) {
-
-
-	vec->V = 0;
-	for (int i = 0; i<32; i++) {
-
-		vec->V = vec->V ^ ((data % 2) << i);
-		data = data >> 1;
-	}
-
-
-
-}//³õÊ¼»¯vec
 uint8_t applyMatToU8(const M8 mat, uint8_t data) {
 
-	/*V8 vec8, ans; 
-	uint8_t n_int;
-	initVecFromBit8(&vec8, data);
-	MatMulVecM8(mat, vec8, &ans);
-	n_int = (uint8_t)ans.V;
-	return n_int;*/
 	return MatMulNumM8(mat, data);
 }
 uint32_t applyMatToU32(const M32 mat, uint32_t data) {
 
-	/*V32 vec32, ans; 
-	uint32_t n_int;
-	initVecFromBit32(&vec32, data);
-	MatMulVecM32(mat, vec32, &ans);
-	n_int = (uint32_t)ans.V;
-	return n_int;*/
 	return MatMulNumM32(mat, data);
 }
 uint8_t present_sbox8(uint8_t x) {
 	uint8_t y = 0;
 	y = sbox[x >> 4 & 0x0F] | (sbox[x & 0x0F] >> 4);
 	return y;
-}//SºĞ±ä»»£¿ÓÒÒÆËÄÎ»
+}//SÂºÃÂ±Ã¤Â»Â»Â£Â¿Ã“Ã’Ã’Ã†Ã‹Ã„ÃÂ»
 
 /**
  * @brief combine addRoundKey and sbox, then confuse it
@@ -172,7 +112,7 @@ uint8_t present_sbox8(uint8_t x) {
  */
 void present_wb_init_rkAsbox(const uint8_t *key, const wb_helper &wbh, present_wb_ctx &ctx) {
 	const uint8_t rounds = ctx.rounds;
-	uint8_t round_counter = 1;//ÂÖ´ÎÊı³õÊ¼»¯
+	uint8_t round_counter = 1;//Ã‚Ã–Â´ÃÃŠÃ½Â³ÃµÃŠÂ¼Â»Â¯
 	int i, j;
 
 	uint8_t state[3];
@@ -185,14 +125,14 @@ void present_wb_init_rkAsbox(const uint8_t *key, const wb_helper &wbh, present_w
 		for (j = 0; j < 256; j++) {
 			uint8_t n_int;
 			n_int = applyMatToU8(wbh.g_inv[0][i], j);
-			n_int = present_sbox8(n_int ^ key[i]);//ÂÖÃÜÔ¿Òì»ò²¢½øĞĞSºĞ´ú»»
+			n_int = present_sbox8(n_int ^ key[i]);//Ã‚Ã–ÃƒÃœÃ”Â¿Ã’Ã¬Â»Ã²Â²Â¢Â½Ã¸ÃÃSÂºÃÂ´ÃºÂ»Â»
 			ctx.rk[0][i][j] = applyMatToU8(wbh.f[0][i], n_int);
 			n_int = applyMatToU8(wbh.g[0][i], j);
 			ctx.stmp[i][j] = n_int;
 		}
 	}
 
-	// update keyÃÜÔ¿À©Õ¹£¨Ñ­»·ÓÒÒÆ18Î»£©
+	// update keyÃƒÃœÃ”Â¿Ã€Â©Ã•Â¹Â£Â¨Ã‘Â­Â»Â·Ã“Ã’Ã’Ã†18ÃÂ»Â£Â©
 	round_key[9] = key[6] << 5 | key[7] >> 3;
 	round_key[8] = key[5] << 5 | key[6] >> 3;
 	round_key[7] = key[4] << 5 | key[5] >> 3;
@@ -251,7 +191,7 @@ void present_wb_init_rkAsbox(const uint8_t *key, const wb_helper &wbh, present_w
 }
 
 void present_wb_init_player(const wb_helper &wbh, present_wb_ctx &ctx) {
-	// permutation£¬PÖÃ»»
+	// permutationÂ£Â¬PÃ–ÃƒÂ»Â»
 	uint8_t round_counter;
 
 	static long pLayer0_hex[] = { 0x80000000,
@@ -288,25 +228,16 @@ void present_wb_init_player(const wb_helper &wbh, present_wb_ctx &ctx) {
 									0x00000001 };
 
 	static M32 p0, p1, p2, p3;
-	//initM32(&p0); initM32(&p1); initM32(&p2); initM32(&p3);
-	//p0.SetDims(8,32); p1.SetDims(8,32); p2.SetDims(8,32); p3.SetDims(8,32);
 	initMatrixFromBit(&p0, pLayer0_hex);
 	initMatrixFromBit(&p1, pLayer1_hex);
 	initMatrixFromBit(&p2, pLayer2_hex);
 	initMatrixFromBit(&p3, pLayer3_hex);
-	//uint32_t a[256] = { 0 };
-	//for (int j = 0; j < 256; j++) {
-		//a[j] = applyMatToU32(p1, 0x12345678 + j) >> 24;
-	//}
-
-
-
 
 	for (round_counter = 0; round_counter < ctx.rounds; round_counter++) {
 
 		M32 Mat;
 		initM32(&Mat);
-		MatMulMatM32(p0, wbh.fc_inv[round_counter][0], &Mat);//µÃMat8*32
+		MatMulMatM32(p0, wbh.fc_inv[round_counter][0], &Mat);//ÂµÃƒMat8*32
 		Mat8MulMatM32(wbh.g[round_counter + 1][0], Mat, &ctx.pLayer[round_counter][0]);
 		MatMulMatM32(p0, wbh.fc_inv[round_counter][1], &Mat);
 		Mat8MulMatM32(wbh.g[round_counter + 1][1], Mat, &ctx.pLayer[round_counter][1]);
@@ -322,16 +253,7 @@ void present_wb_init_player(const wb_helper &wbh, present_wb_ctx &ctx) {
 		Mat8MulMatM32(wbh.g[round_counter + 1][6], Mat, &ctx.pLayer[round_counter][6]);   
 		MatMulMatM32(p3, wbh.fc_inv[round_counter][1], &Mat);
 		Mat8MulMatM32(wbh.g[round_counter + 1][7], Mat, &ctx.pLayer[round_counter][7]);
-		
-			/*ctx.pLayer[round_counter][0] = p0;
-		ctx.pLayer[round_counter][1] = p0;
-		ctx.pLayer[round_counter][2] = p1;
-		ctx.pLayer[round_counter][3] = p1;
 
-		ctx.pLayer[round_counter][4] = p2;
-		ctx.pLayer[round_counter][5] = p2;
-		ctx.pLayer[round_counter][6] = p3;
-		ctx.pLayer[round_counter][7] = p3;*/
 	}
 }
 
